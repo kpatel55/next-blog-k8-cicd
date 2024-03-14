@@ -9,6 +9,17 @@ and view the pricing details for running an EKS cluster.
 
 ### Deployment
 
+Go to the Settings for your GitHub repo, and add the following secrets: AWS_ACCESS_KEY_ID, AWS_REGION, AWS_SECRET_ACCESS_KEY
+
+Next, create the ECR repos that will store our Docker images:
+
+```
+aws ecr create-repository --repository-name node-blog --region YOUR_REGION_NAME
+aws ecr create-repository --repository-name next-react-blog --region YOUR_REGION_NAME
+```
+
+Then, add the ECR repo URI's to their respective values.yaml file in backend/node-blog & frontend/next-react-blog, on Line 8.
+
 In order to deploy the app, you'll need to first provision an EKS cluster and associate an OIDC provider to your AWS account. Be sure to provide the region you're deploying to:
 
 ```

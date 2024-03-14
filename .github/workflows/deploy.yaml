@@ -8,10 +8,6 @@ jobs:
   deploy-backend:
     runs-on: ubuntu-latest
     steps:
-      - name: Get short SHA
-        id: commit
-        uses: prompt/actions-commit-hash@v2
-
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -30,7 +26,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: node-blog
-          IMAGE_TAG: ${{ steps.commit.outputs.short }}
+          IMAGE_TAG: latest
         run: |
           cd backend
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
@@ -48,10 +44,6 @@ jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
     steps:
-      - name: Get short SHA
-        id: commit
-        uses: prompt/actions-commit-hash@v2
-
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -70,7 +62,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: next-react-blog
-          IMAGE_TAG: ${{ steps.commit.outputs.short }}
+          IMAGE_TAG: latest
         run: |
           cd frontend
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
