@@ -1,5 +1,0 @@
-{
-  "yaml.schemas": {
-    "https://json.schemastore.org/github-workflow.json": "file:///Users/kush/projects/k8-cicd-blog/eks-next-blog/.github/workflows/deploy.yaml"
-  }
-}
