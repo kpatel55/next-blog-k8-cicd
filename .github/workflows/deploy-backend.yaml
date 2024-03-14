@@ -5,7 +5,7 @@ on:
     branches: ["main"]
 
 jobs:
-  deploy:
+  deploy-backend:
     runs-on: ubuntu-latest
     steps:
       - name: Get short SHA
@@ -44,3 +44,43 @@ jobs:
         run: |
           cd backend
           helm install node-blog node-blog/ --values node-blog/values.yaml
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get short SHA
+        id: commit
+        uses: prompt/actions-commit-hash@v2
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{secrets.AWS_REGION}}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: next-react-blog
+          IMAGE_TAG: ${{ steps.commit.outputs.short }}
+        run: |
+          cd frontend
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Update kube config
+        run: |
+          aws eks update-kubeconfig --name next-node-blog --region ${{ env.AWS_REGION }}
+
+      - name: Deploy to EKS
+        run: |
+          cd frontend
+          helm install next-react-blog next-react-blog/ --values next-react-blog/values.yaml
