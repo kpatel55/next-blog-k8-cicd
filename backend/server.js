@@ -7,8 +7,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// const config = require("./config.js");
-// aws.config.update(config.aws_config);
 const dynamodb = new aws.DynamoDB.DocumentClient();
 
 app.get("/profile", async (req, res) => {
