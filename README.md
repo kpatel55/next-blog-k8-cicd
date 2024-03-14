@@ -1,6 +1,7 @@
-# Deploy Next.js Blog to EKS Demo
+# Deploy Next.js Blog to EKS using Helm & GitHub Actions
 
-A simple demo of deploying a full-stack blog application to EKS.
+A simple demo of deploying a full-stack blog application to EKS using
+Helm & GitHub Actions.
 Before you continue, be sure to install Terraform, kubectl, and eksctl,
 and view the pricing details for running an EKS cluster.
 
@@ -41,19 +42,7 @@ Copy the arn of the IAM policy from the output, and use the attach-policy-arn op
 eksctl create iamserviceaccount --name eks-dynamodb-srv-acct --namespace default --cluster next-node-blog --role-name eks-dynamodb-role --attach-policy-arn YOUR_IAM_POLICY --approve
 ```
 
-After the service account is created, the backend Node application can be deployed:
-
-```
-cd ../backend
-kubectl apply -f deployment.yaml
-```
-
-And finally, deploy the Next.js frontend:
-
-```
-cd ../frontend
-kubectl apply -f deployment.yaml
-```
+After the service account is created, create and push a new repo commit to trigger our pipeline.
 
 ### Navigate
 
