@@ -37,8 +37,10 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       - name: Update kube config
-        run: aws eks update-kubeconfig --name next-node-blog --region ${{ env.AWS_REGION }}
+        run: |
+          aws eks update-kubeconfig --name next-node-blog --region ${{ env.AWS_REGION }}
 
       - name: Deploy to EKS
         run: |
-          helm install -f backend/node-blog/values.yaml node-blog node-blog/
+          cd backend
+          helm install node-blog node-blog/ --values node-blog/values.yaml
